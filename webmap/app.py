@@ -51,8 +51,7 @@ app_ui = ui.page_fluid(
         }
                   
         .shiny-spinner-container {
-            opacity: 0 !important; /* Make it invisible */
-            pointer-events: none; /* Prevent interaction */
+            display: none !important ;
         }
     """),
     ui.div(
