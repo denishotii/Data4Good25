@@ -85,7 +85,48 @@ ui.tags.script("""
 """)
 
 
-# Function to generate the map
+import math
+
+def generate_fake_next_step(last_location):
+    """
+    Generates a fake next step by moving the location in a random direction 
+    between 300 km and 1500 km away.
+    """
+    if not last_location:
+        return None
+
+    lat, lon = last_location
+
+    # Generate a random direction (angle in degrees)
+    random_angle = random.uniform(0, 360)
+
+    # Generate a random distance (between 300 km and 1500 km)
+    random_distance = random.uniform(300, 700)  # in km
+
+    # Earth's radius in km
+    earth_radius = 6371.0
+
+    # Convert distance to radians
+    angular_distance = random_distance / earth_radius
+
+    # Convert angle to radians
+    random_angle_rad = math.radians(random_angle)
+
+    # Calculate new latitude
+    new_lat = math.asin(math.sin(math.radians(lat)) * math.cos(angular_distance) +
+                         math.cos(math.radians(lat)) * math.sin(angular_distance) * math.cos(random_angle_rad))
+
+    # Calculate new longitude
+    new_lon = math.radians(lon) + math.atan2(math.sin(random_angle_rad) * math.sin(angular_distance) * math.cos(math.radians(lat)),
+                                             math.cos(angular_distance) - math.sin(math.radians(lat)) * math.sin(new_lat))
+
+    # Convert back to degrees
+    new_lat = math.degrees(new_lat)
+    new_lon = math.degrees(new_lon)
+
+    return {"city": "Unknown (Fake Prediction)", "lat": new_lat, "lon": new_lon}
+
+# Modify the map function
 def create_map(selected_victim=None, show_prediction=True):
     if not selected_victim or selected_victim not in victim_dict:
         return folium.Map()._repr_html_()
@@ -140,17 +181,17 @@ def create_map(selected_victim=None, show_prediction=True):
         ).add_to(m)
 
     if show_prediction:
-        realistic_prediction = confirmed_locations[-1] if confirmed_locations else None
-        if realistic_prediction:
+        fake_prediction = generate_fake_next_step(last_location)
+        if fake_prediction:
             folium.Marker(
-                location=[realistic_prediction["lat"], realistic_prediction["lon"]],
-                popup=f"Predicted Next Step: {realistic_prediction['city']}",
+                location=[fake_prediction["lat"], fake_prediction["lon"]],
+                popup=f"Predicted Next Step: {fake_prediction['city']}",
                 icon=folium.Icon(color="orange", icon="flag")
             ).add_to(m)
 
             folium.PolyLine(
                 [(confirmed_locations[-1]["lat"], confirmed_locations[-1]["lon"]),
-                 (realistic_prediction["lat"], realistic_prediction["lon"])],
+                 (fake_prediction["lat"], fake_prediction["lon"])],
                 color="orange",
                 weight=2.5,
                 dash_array="5,5"
@@ -158,6 +199,7 @@ def create_map(selected_victim=None, show_prediction=True):
 
     folium.LayerControl(collapsed=False).add_to(m)
     return m._repr_html_()
+
 
 # Define server-side logic
 def server(input, output, session):
