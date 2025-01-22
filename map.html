@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html>
+<head>
+    
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+    
+        <script>
+            L_NO_TOUCH = false;
+            L_DISABLE_3D = false;
+        </script>
+    
+    <style>html, body {width: 100%;height: 100%;margin: 0;padding: 0;}</style>
+    <style>#map {position:absolute;top:0;bottom:0;right:0;left:0;}</style>
+    <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.js"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-glyphicons.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.2.0/css/all.min.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/python-visualization/folium/folium/templates/leaflet.awesome.rotate.min.css"/>
+    
+            <meta name="viewport" content="width=device-width,
+                initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+            <style>
+                #map_9ee31da61fe990c730b8f9882d9a505f {
+                    position: relative;
+                    width: 100.0%;
+                    height: 100.0%;
+                    left: 0.0%;
+                    top: 0.0%;
+                }
+                .leaflet-container { font-size: 1rem; }
+            </style>
+        
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.1.0/leaflet.markercluster.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.1.0/MarkerCluster.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.1.0/MarkerCluster.Default.css"/>
+</head>
+<body>
+    
+    
+            <div class="folium-map" id="map_9ee31da61fe990c730b8f9882d9a505f" ></div>
+        
+</body>
+<script>
+    
+    
+            var map_9ee31da61fe990c730b8f9882d9a505f = L.map(
+                "map_9ee31da61fe990c730b8f9882d9a505f",
+                {
+                    center: [47.55251459999999, 25.8855848],
+                    crs: L.CRS.EPSG3857,
+                    ...{
+  "zoom": 6,
+  "zoomControl": true,
+  "preferCanvas": false,
+}
+
+                }
+            );
+
+            
+
+        
+    
+            var tile_layer_55d9a9a6465ee32a66d525cf80cbdf1a = L.tileLayer(
+                "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
+                {
+  "minZoom": 0,
+  "maxZoom": 19,
+  "maxNativeZoom": 19,
+  "noWrap": false,
+  "attribution": "\u0026copy; \u003ca href=\"https://www.openstreetmap.org/copyright\"\u003eOpenStreetMap\u003c/a\u003e contributors",
+  "subdomains": "abc",
+  "detectRetina": false,
+  "tms": false,
+  "opacity": 1,
+}
+
+            );
+        
+    
+            tile_layer_55d9a9a6465ee32a66d525cf80cbdf1a.addTo(map_9ee31da61fe990c730b8f9882d9a505f);
+        
+    
+            var marker_cluster_3bb2b65c4c5a88b54398a2ab97c91ccb = L.markerClusterGroup(
+                {
+}
+            );
+        
+    
+            var marker_f94f2a87273b3cb2b0ffb6956564b920 = L.marker(
+                [47.55251459999999, 25.8855848],
+                {
+}
+            ).addTo(marker_cluster_3bb2b65c4c5a88b54398a2ab97c91ccb);
+        
+    
+            var icon_a887f04cbd4554ccf442ab7e11422cd8 = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "red",
+  "iconColor": "white",
+  "icon": "info-sign",
+  "prefix": "glyphicon",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+            marker_f94f2a87273b3cb2b0ffb6956564b920.setIcon(icon_a887f04cbd4554ccf442ab7e11422cd8);
+        
+    
+        var popup_a47b1c2d2a209957df837c7d8471f85f = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_31a97d925672b0f3e294010fcc6a4a55 = $(`<div id="html_31a97d925672b0f3e294010fcc6a4a55" style="width: 100.0%; height: 100.0%;">Location: Gura Humorului</div>`)[0];
+                popup_a47b1c2d2a209957df837c7d8471f85f.setContent(html_31a97d925672b0f3e294010fcc6a4a55);
+            
+        
+
+        marker_f94f2a87273b3cb2b0ffb6956564b920.bindPopup(popup_a47b1c2d2a209957df837c7d8471f85f)
+        ;
+
+        
+    
+    
+            var marker_ece1eda85443c6d0e6371074f2261fb5 = L.marker(
+                [53.8980663, 30.3325337],
+                {
+}
+            ).addTo(marker_cluster_3bb2b65c4c5a88b54398a2ab97c91ccb);
+        
+    
+            var icon_2e1cccd87899f482e3a853c822fa7526 = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "red",
+  "iconColor": "white",
+  "icon": "info-sign",
+  "prefix": "glyphicon",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+            marker_ece1eda85443c6d0e6371074f2261fb5.setIcon(icon_2e1cccd87899f482e3a853c822fa7526);
+        
+    
+        var popup_6aa8188a9d507c9d10b65ddf1e164b20 = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_eb6ffb7fdcdb397b6e2813688d62b082 = $(`<div id="html_eb6ffb7fdcdb397b6e2813688d62b082" style="width: 100.0%; height: 100.0%;">Location: Moghilev</div>`)[0];
+                popup_6aa8188a9d507c9d10b65ddf1e164b20.setContent(html_eb6ffb7fdcdb397b6e2813688d62b082);
+            
+        
+
+        marker_ece1eda85443c6d0e6371074f2261fb5.bindPopup(popup_6aa8188a9d507c9d10b65ddf1e164b20)
+        ;
+
+        
+    
+    
+            marker_cluster_3bb2b65c4c5a88b54398a2ab97c91ccb.addTo(map_9ee31da61fe990c730b8f9882d9a505f);
+        
+</script>
+</html>
