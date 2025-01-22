@@ -87,7 +87,7 @@ ui.tags.script("""
 
 import math
 
-def generate_fake_next_step(last_location):
+def generate_example_next_step(last_location):
     """
     Generates a fake next step by moving the location in a random direction 
     between 300 km and 1500 km away.
@@ -124,7 +124,7 @@ def generate_fake_next_step(last_location):
     new_lat = math.degrees(new_lat)
     new_lon = math.degrees(new_lon)
 
-    return {"city": "Unknown (Fake Prediction)", "lat": new_lat, "lon": new_lon}
+    return {"city": "Unknown (Example Prediction)", "lat": new_lat, "lon": new_lon}
 
 # Modify the map function
 def create_map(selected_victim=None, show_prediction=True):
@@ -181,7 +181,7 @@ def create_map(selected_victim=None, show_prediction=True):
         ).add_to(m)
 
     if show_prediction:
-        fake_prediction = generate_fake_next_step(last_location)
+        fake_prediction = generate_example_next_step(last_location)
         if fake_prediction:
             folium.Marker(
                 location=[fake_prediction["lat"], fake_prediction["lon"]],
