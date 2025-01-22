@@ -425,22 +425,26 @@ for i in range(len(confirmed_locations) - 1):
         weight=3
     ).add_to(m)
 
+prediction_layer = folium.FeatureGroup(name="Show Predictions")
+
+
 # 🔹 **Predicted Next Step - Flag Icon**
 if realistic_prediction:
     folium.Marker(
         location=[realistic_prediction["lat"], realistic_prediction["lon"]],
         popup=f"Predicted Next Step: {realistic_prediction['city']}",
-        icon=folium.Icon(color="orange", icon="flag")  # Default flag icon in orange
-    ).add_to(m)
+        icon=folium.Icon(color="orange", icon="flag")
+    ).add_to(prediction_layer)
 
-    # Draw a dashed **orange line** from the last confirmed stop to the corrected predicted stop
     folium.PolyLine(
         [(confirmed_locations[-1]["lat"], confirmed_locations[-1]["lon"]),
          (realistic_prediction["lat"], realistic_prediction["lon"])],
         color="orange",
         weight=2.5,
         dash_array="5,5"
-    ).add_to(m)
+    ).add_to(prediction_layer)
+
+m.add_child(prediction_layer)
 
 # 🔹 **Layer Control: Toggle WWII vs Modern Map**
 folium.TileLayer("CartoDB Positron", name="Modern Map").add_to(m)  # Light gray for modern

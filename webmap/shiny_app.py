@@ -5,7 +5,7 @@ import random
 from shiny import App, ui, render
 from geopy.distance import geodesic
 
-# Load preprocessed data (optimized for speed)
+# Load preprocessed data
 df = pd.read_csv("data/cleaned_holocaust_data.csv")
 
 # Ensure missing names are replaced with "Unknown"
@@ -36,18 +36,8 @@ app_ui = ui.page_fluid(
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
             width: 300px;
             z-index: 1000;
-        }
-        .floating-info {
-            position: absolute;
-            bottom: 20px;
-            left: 20px;
-            background: rgba(0, 0, 0, 0.8);
-            color: white;
-            padding: 12px;
-            border-radius: 10px;
-            font-size: 14px;
-            display: none;
-        }
+        }              
+
         .victim-card {
             background: white;
             padding: 10px;
@@ -59,22 +49,44 @@ app_ui = ui.page_fluid(
         .victim-card:hover {
             background: #f0f0f0;
         }
+        .loading-spinner {
+            display: none !important;  /* Hide loading spinner */
+        }
     """),
     ui.div(
-        ui.output_ui("map"),
         ui.div(
             ui.tags.h3("Search for a Victim"),
-            ui.input_text("victim_name", "Type Name:", ""),
+            ui.input_text("victim_name", "Type Name:", "", autocomplete="off"),
             ui.output_ui("victim_list"),
             ui.output_text("selected_victim"),
-            ui.div(class_="floating-info", id="info-box")
+            ui.input_checkbox("show_prediction", "Show Predicted Next Step", value=True),
+            id="search-panel"
         ),
+        ui.output_ui("map"),
         id="map-container"
     )
+
+
 )
 
-# Function to generate the map with country names & vintage overlay
-def create_map(selected_victim=None):
+ui.tags.script("""
+    var debounceTimer;
+    document.addEventListener("DOMContentLoaded", function() {
+        var input = document.querySelector('input[id="victim_name"]');
+        if (input) {
+            input.addEventListener("input", function() {
+                clearTimeout(debounceTimer);
+                debounceTimer = setTimeout(function() {
+                    Shiny.setInputValue('victim_name', input.value, {priority: 'event'});
+                }, 500); // 500ms debounce delay
+            });
+        }
+    });
+""")
+
+
+# Function to generate the map
+def create_map(selected_victim=None, show_prediction=True):
     if not selected_victim or selected_victim not in victim_dict:
         return folium.Map()._repr_html_()
 
@@ -91,7 +103,6 @@ def create_map(selected_victim=None):
         map_center = (0, 0)
         last_location = (0, 0)
 
-    # ✅ Use "CartoDB Positron" for country names & borders
     m = folium.Map(
         location=map_center,
         zoom_start=6,
@@ -99,7 +110,6 @@ def create_map(selected_victim=None):
         attr="© OpenStreetMap contributors"
     )
 
-    # ✅ Add old map texture for a vintage look
     folium.TileLayer(
         tiles="https://www.transparenttextures.com/patterns/old-map.png",
         attr="Old Map Texture",
@@ -108,14 +118,12 @@ def create_map(selected_victim=None):
         control=True
     ).add_to(m)
 
-    # ✅ Add Stamen Toner as an optional toggle layer
     folium.TileLayer(
         tiles="Stamen Toner",
         attr="Stamen Toner (Historical Map)",
         name="WWII Map"
     ).add_to(m)
 
-    # Mark confirmed locations
     for i, point in enumerate(confirmed_locations):
         folium.Marker(
             location=[point["lat"], point["lon"]],
@@ -123,7 +131,6 @@ def create_map(selected_victim=None):
             icon=folium.Icon(color="darkred", icon="info-sign")
         ).add_to(m)
 
-    # Draw paths in sepia color
     for i in range(len(confirmed_locations) - 1):
         folium.PolyLine(
             [(confirmed_locations[i]["lat"], confirmed_locations[i]["lon"]),
@@ -132,17 +139,24 @@ def create_map(selected_victim=None):
             weight=3
         ).add_to(m)
 
-    # Add a predicted location based on similar victims
-    realistic_prediction = confirmed_locations[-1] if confirmed_locations else None
-    if realistic_prediction:
-        folium.Marker(
-            location=[realistic_prediction["lat"], realistic_prediction["lon"]],
-            popup=f"Predicted Next Step: {realistic_prediction['city']}",
-            icon=folium.Icon(color="orange", icon="flag")
-        ).add_to(m)
+    if show_prediction:
+        realistic_prediction = confirmed_locations[-1] if confirmed_locations else None
+        if realistic_prediction:
+            folium.Marker(
+                location=[realistic_prediction["lat"], realistic_prediction["lon"]],
+                popup=f"Predicted Next Step: {realistic_prediction['city']}",
+                icon=folium.Icon(color="orange", icon="flag")
+            ).add_to(m)
+
+            folium.PolyLine(
+                [(confirmed_locations[-1]["lat"], confirmed_locations[-1]["lon"]),
+                 (realistic_prediction["lat"], realistic_prediction["lon"])],
+                color="orange",
+                weight=2.5,
+                dash_array="5,5"
+            ).add_to(m)
 
     folium.LayerControl(collapsed=False).add_to(m)
-
     return m._repr_html_()
 
 # Define server-side logic
@@ -168,7 +182,7 @@ def server(input, output, session):
     @output
     @render.ui
     def map():
-        return ui.HTML(create_map(input.selected_victim()))
+        return ui.HTML(create_map(input.selected_victim(), input.show_prediction()))
 
 app = App(app_ui, server)
 
